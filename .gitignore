@@ -54,11 +54,11 @@ Thumbs.db
 /3rdparty/yaml-cpp/Makefile
 
 # /db/
-/db/import
+# /db/import
 
 # /conf/
-/conf/import
-/conf/msg_conf/import
+# /conf/import
+# /conf/msg_conf/import
 
 # /log/
 /log/*.log
@@ -75,7 +75,7 @@ Thumbs.db
 /src/common/svnversion.h
 
 # /src/custom/
-/src/custom
+# /src/custom
 
 # /src/login/
 /src/login/Makefile

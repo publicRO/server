@@ -12,12 +12,12 @@
 	/// Do NOT edit this line! To set your client version, please do this instead:
 	/// In Windows: Add this line in your src\custom\defines_pre.h file: #define PACKETVER YYYYMMDD
 	/// In Linux: The same as above or run the following command: ./configure --enable-packetver=YYYYMMDD
-	#define PACKETVER 20180117
+	#define PACKETVER 20151104
 #endif
 
 #ifndef PACKETVER_RE
 	/// From this point on only kRO RE clients are supported
-	#if PACKETVER > 20180117
+	#if PACKETVER > 20151104
 		#define PACKETVER_RE
 	#endif
 #endif

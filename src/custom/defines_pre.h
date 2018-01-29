@@ -7,6 +7,7 @@
  * rAthena configuration file (http://rathena.org)
  * For detailed guidance on these check http://rathena.org/wiki/SRC/config/
  **/
+ #define PACKETVER 20170412
 
 
 

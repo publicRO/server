@@ -2352,10 +2352,10 @@ int status_base_amotion_pc(struct map_session_data* sd, struct status_data* stat
 	float temp_aspd = 0;
 
 	amotion = job_info[classidx].aspd_base[sd->weapontype1]; // Single weapon
-	if (sd->status.weapon > MAX_WEAPON_TYPE)
-		amotion += job_info[classidx].aspd_base[sd->weapontype2] / 4; // Dual-wield
 	if (sd->status.shield)
 		amotion += job_info[classidx].aspd_base[MAX_WEAPON_TYPE];
+	else if (sd->weapontype2)
+		amotion += job_info[classidx].aspd_base[sd->weapontype2] / 4; // Dual-wield
 
 	switch(sd->status.weapon) {
 		case W_BOW:
@@ -2787,22 +2787,21 @@ int status_calc_mob_(struct mob_data* md, enum e_status_calc_opt opt)
 			ShowError("status_calc_mob: No castle set at map %s\n", map[md->bl.m].name);
 		else if(gc->castle_id < 24 || md->mob_id == MOBID_EMPERIUM) {
 #ifdef RENEWAL
-			status->max_hp += 50 * gc->defense;
-			status->max_sp += 70 * gc->defense;
+			status->max_hp += 50 * (gc->defense / 5);
 #else
 			status->max_hp += 1000 * gc->defense;
-			status->max_sp += 200 * gc->defense;
 #endif
 			status->hp = status->max_hp;
-			status->sp = status->max_sp;
 			status->def += (gc->defense+2)/3;
 			status->mdef += (gc->defense+2)/3;
 		}
 		if(md->mob_id != MOBID_EMPERIUM) {
-			status->batk += status->batk * 10*md->guardian_data->guardup_lv/100;
-			status->rhw.atk += status->rhw.atk * 10*md->guardian_data->guardup_lv/100;
-			status->rhw.atk2 += status->rhw.atk2 * 10*md->guardian_data->guardup_lv/100;
-			status->aspd_rate -= 100*md->guardian_data->guardup_lv;
+			status->max_hp += 1000 * gc->defense;
+			status->hp = status->max_hp;
+			status->batk += 2 * md->guardian_data->guardup_lv + 8;
+			status->rhw.atk += 2 * md->guardian_data->guardup_lv + 8;
+			status->rhw.atk2 += 2 * md->guardian_data->guardup_lv + 8;
+			status->aspd_rate -= 2 * md->guardian_data->guardup_lv + 3;
 		}
 	}
 
@@ -7657,7 +7656,7 @@ void status_set_viewdata(struct block_list *bl, int class_)
 		vd = npc_get_viewdata(class_);
 	else if (homdb_checkid(class_))
 		vd = hom_get_viewdata(class_);
-	else if (mercenary_class(class_))
+	else if (mercenary_db(class_))
 		vd = mercenary_get_viewdata(class_);
 	else if (elemental_class(class_))
 		vd = elemental_get_viewdata(class_);
@@ -10948,10 +10947,16 @@ int status_change_start(struct block_list* src, struct block_list* bl,enum sc_ty
 			val2 = src->id;
 			break;
 		case SC_HEAT_BARREL:
-			//kRO Update 2016-05-25
-			val2 = val1 * 5; // -fixed casttime
-			val3 = 6 + val1 * 2; // ATK
-			val4 = 25 + val1 * 5; // -hit
+			{
+				uint8 n = 10;
+				if (sd)
+					n = (uint8)sd->spiritball_old;
+
+				//kRO Update 2016-05-25
+				val2 = n * 5; // -fixed casttime
+				val3 = (6 + val1 * 2) * n; // ATK
+				val4 = 25 + val1 * 5; // -hit
+			}
 			break;
 		case SC_P_ALTER:
 			{
